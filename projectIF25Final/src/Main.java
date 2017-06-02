@@ -1,14 +1,18 @@
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        ArrayList<MonUser> list = calculFreqTweet();
-        System.out.println("Hello World!" + list.toString());
+        //ArrayList<MonUser> list = calculFreqTweet();
+        User test = new User(1,"babar",100,200,new GregorianCalendar(2017, Calendar.MAY, 31).getTime(),new Tweet());
+        System.out.println(test.getAgeInDay());
 
     }
-
+/*
     private static ArrayList<MonUser> calculFreqTweet(){
         ArrayList<MonUser> list = new ArrayList<MonUser>();
         for(int i=0;i<30;i++){
@@ -40,7 +44,7 @@ public class Main {
                     ", estAtypique=" + estAtypique +
                     '}';
         }
-    }
+    }*/
 }
 
 
