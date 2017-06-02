@@ -7,7 +7,7 @@ import java.util.Date;
 public class User {
 
     //User identity
-    int idUser;
+    long idUser;
     String nameUser;
     Date creationDate;
     ArrayList<Tweet> tweetsList = new ArrayList<Tweet>();
@@ -19,15 +19,15 @@ public class User {
 
     private  long ageInDay;
     private  int numberOfFollowers;
-    private  int urlPerTweet;
-    private  int refPerTweet;
-    private  int hashtagPerTweet;
-    private  int retweetPerTweet;
-    private  int freqTweetperDay;
-    private  int distBetwTweet;
-    private int reputation;
+    private  double moyUrlPerTweet;
+    private  double moyMentionPerTweet;
+    private  double moyHashtagPerTweet;
+    private  double moyTweetRetweete;
+    private  double freqTweetperDay;
+    private  double distBetwTweet;
+    private double reputation;
 
-    public User(int id, String name, int followers_count, int friends_count, Date created_at, Tweet tweet) {
+    public User(long id, String name, int followers_count, int friends_count, Date created_at, Tweet tweet) {
         this.idUser = id;
         this.nameUser = name;
         this.numberOfFollowers = followers_count;
@@ -53,6 +53,34 @@ public class User {
         ageInDay = delta / (MILLISECONDS_PER_DAY);
         return ageInDay;
     }
+    public double getMoyUrlPerTweet(){
+        int totalUrl =0;
+        for(int i=0;i<tweetsList.size();i++){
+            totalUrl += tweetsList.get(i).numberOfURL;
+        }
+        moyUrlPerTweet = totalUrl/tweetsList.size();
+        return moyUrlPerTweet;
+    }
+
+    public double getMoyMentionPerTweet() {
+        int totalMentionNumber = 0;
+        for(int i=0;i<tweetsList.size();i++){
+            totalMentionNumber += tweetsList.get(i).numberOfMention;
+        }
+        moyMentionPerTweet= totalMentionNumber/tweetsList.size();
+        return moyMentionPerTweet;
+    }
+
+    public double getMoyHashtagPerTweet() {
+        int totalHashtagNumber = 0;
+        for(int i=0;i<tweetsList.size();i++){
+            totalHashtagNumber += tweetsList.get(i).numberOfHashTags;
+        }
+        moyHashtagPerTweet= totalHashtagNumber/tweetsList.size();
+        return moyHashtagPerTweet;
+
+    }
+
 
 
 }
