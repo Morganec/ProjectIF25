@@ -80,7 +80,11 @@ public class User {
         return moyHashtagPerTweet;
 
     }
-
+/*
+    public double getFreqTweetperDay() {
+        //PAS ENCORE FAIT
+        return freqTweetperDay;
+    }*/
 
 
 }
