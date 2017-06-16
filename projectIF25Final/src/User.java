@@ -82,21 +82,52 @@ public class User {
 
     }
 
-    public String getFreqTweetperDay() {
+    public double getFreqTweetperDay() {
         ArrayList<String> listeDate = new ArrayList<String>();
-ArrayList<ArrayList<Integer>> listDate;
+        ArrayList<String> listeDate2 = new ArrayList<String>();
+        ArrayList<String> listeDate3= new ArrayList<String>();
+
+        ArrayList<Integer> listeChiffre = new ArrayList<Integer>();
+        ArrayList<Integer> listeChiffre2 = new ArrayList<Integer>();
         // A remplacer par un stream
         for(Tweet tweet:tweetsList){
             Calendar cal = Calendar.getInstance();
             cal.setTime(tweet.getTweetDate());
             String dateConcat =cal.get(Calendar.DAY_OF_MONTH)+""+cal.get(Calendar.DAY_OF_WEEK)+""+cal.get(Calendar.YEAR);
-
             listeDate.add(dateConcat);
         }
 
-        //PAS ENCORE FAIT
-      //  return freqTweetperDay;
-        return listeDate.toString();
+
+
+        System.out.println(listeDate.toString());
+        int i = 0;
+        listeDate2.addAll(listeDate);
+        for(String date:listeDate){
+            listeChiffre.add(0);
+            for(String date2:listeDate2){
+
+                if (date.equals(date2) ){
+
+                    listeChiffre.set(i, listeChiffre.get(i) + 1);
+                    listeDate3.add(date2);
+                }
+            }
+            listeDate2.removeAll(listeDate3);
+          i++;
+
+        }
+        double total = 0;
+        for(int nombre : listeChiffre){
+            if(nombre != 0){
+                total += nombre;
+                listeChiffre2.add(nombre);
+            }
+        }
+        freqTweetperDay = total/listeChiffre2.size();
+        System.out.println(listeChiffre2.toString());
+
+        return freqTweetperDay;
+
     }
 
 

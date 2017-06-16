@@ -13,6 +13,17 @@ public class Main {
         userList.add(test);
         tweet = new Tweet(8,0,4,"bonjour",true,new GregorianCalendar(2015, Calendar.APRIL, 11).getTime());
         test.tweetsList.add(tweet);
+        tweet = new Tweet(2,1,4,"bor",true,new GregorianCalendar(2015, Calendar.APRIL, 11).getTime());
+        test.tweetsList.add(tweet);
+        tweet = new Tweet(2,1,4,"bor",true,new GregorianCalendar(2015, Calendar.APRIL, 11).getTime());
+        test.tweetsList.add(tweet);
+        tweet =new Tweet(2,3,1,"bonjour",true,new GregorianCalendar(2013, Calendar.APRIL, 10).getTime());
+        test.tweetsList.add(tweet);
+
+        tweet =new Tweet(2,3,1,"bonjour",true,new GregorianCalendar(2014, Calendar.APRIL, 10).getTime());
+        test.tweetsList.add(tweet);
+        tweet =new Tweet(2,3,1,"bonjour",true,new GregorianCalendar(2013, Calendar.APRIL, 9).getTime());
+        test.tweetsList.add(tweet);
         System.out.println(test.getAgeInDay());
         System.out.println(test.getMoyUrlPerTweet());
         System.out.println(test.getMoyHashtagPerTweet());
