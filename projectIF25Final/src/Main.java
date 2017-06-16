@@ -1,6 +1,6 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class Main {
@@ -30,7 +30,12 @@ public class Main {
         System.out.println(test.getMoyMentionPerTweet());
         System.out.println(test.getFreqTweetperDay());
 
-
+        FichierCSV csv = new FichierCSV(userList);
+        try {
+            csv.creerFichierCsv();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
