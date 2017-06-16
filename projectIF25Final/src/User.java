@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -80,11 +81,23 @@ public class User {
         return moyHashtagPerTweet;
 
     }
-/*
-    public double getFreqTweetperDay() {
+
+    public String getFreqTweetperDay() {
+        ArrayList<String> listeDate = new ArrayList<String>();
+ArrayList<ArrayList<Integer>> listDate;
+        // A remplacer par un stream
+        for(Tweet tweet:tweetsList){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(tweet.getTweetDate());
+            String dateConcat =cal.get(Calendar.DAY_OF_MONTH)+""+cal.get(Calendar.DAY_OF_WEEK)+""+cal.get(Calendar.YEAR);
+
+            listeDate.add(dateConcat);
+        }
+
         //PAS ENCORE FAIT
-        return freqTweetperDay;
-    }*/
+      //  return freqTweetperDay;
+        return listeDate.toString();
+    }
 
 
 }
