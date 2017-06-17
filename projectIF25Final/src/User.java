@@ -7,36 +7,46 @@ import java.util.Date;
  */
 public class User {
 
+
     //User identity
     long idUser;
+
+
+
     String nameUser;
     Date creationDate;
-    ArrayList<Tweet> tweetsList = new ArrayList<Tweet>();
 
+
+    ArrayList<Tweet> tweetsList;
+String descriptionProfil;
     //SPOT featured
     private int numberOfTweet;
     private int numberOfFriend;
 
 
     private  long ageInDay;
+
+
+
     private  int numberOfFollowers;
     private  double moyUrlPerTweet;
     private  double moyMentionPerTweet;
     private  double moyHashtagPerTweet;
+    private  double moyLikePerTweet;
     private  double moyTweetRetweete;
     private  double freqTweetperDay;
     private  double distBetwTweet;
     private double reputation;
 
-    public User(long id, String name, int followers_count, int friends_count, Date created_at, Tweet tweet) {
+    public User(long id, String name, int followers_count, int friends_count, Date created_at,String descr) {
         this.idUser = id;
         this.nameUser = name;
+        this.descriptionProfil = descr;
         this.numberOfFollowers = followers_count;
         this.numberOfFriend =friends_count;
         this.creationDate = created_at;
-        if(!tweetsList.contains(tweet)){
-            this.tweetsList.add(tweet);
-        }
+        this.tweetsList = new ArrayList<Tweet>();
+
     }
 
 
@@ -61,6 +71,15 @@ public class User {
         }
         moyUrlPerTweet = totalUrl/tweetsList.size();
         return moyUrlPerTweet;
+    }
+
+    public double getMoyLikesPerTweet(){
+        int totalLike =0;
+        for(int i=0;i<tweetsList.size();i++){
+            totalLike += tweetsList.get(i).numberOfLikes;
+        }
+        moyLikePerTweet = totalLike/tweetsList.size();
+        return moyLikePerTweet;
     }
 
     public double getMoyMentionPerTweet() {
@@ -98,8 +117,6 @@ public class User {
         }
 
 
-
-        System.out.println(listeDate.toString());
         int i = 0;
         listeDate2.addAll(listeDate);
         for(String date:listeDate){
@@ -124,11 +141,42 @@ public class User {
             }
         }
         freqTweetperDay = total/listeChiffre2.size();
-        System.out.println(listeChiffre2.toString());
+
 
         return freqTweetperDay;
 
     }
 
+
+    public long getIdUser() {
+        return idUser;
+    }
+    public String getNameUser() {
+        return nameUser;
+    }
+
+    public int getSizeName(){
+        return this.nameUser.length();
+    }
+
+    public int getSizeDescr(){
+        return this.descriptionProfil.length();
+    }
+
+    public ArrayList<Tweet> getTweetsList() {
+        return tweetsList;
+    }
+
+    public int getNumberOfTweet() {
+        return numberOfTweet;
+    }
+
+    public double getReputation() {
+        return reputation;
+    }
+
+    public double getRatioFollow(){
+        return numberOfFollowers/numberOfFriend;
+    }
 
 }

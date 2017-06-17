@@ -8,6 +8,7 @@ public class Tweet {
     int numberOfHashTags;
     int numberOfMention;
     int numberOfRetweet;
+    int numberOfLikes;
     boolean isARetweet;
 
 
@@ -17,13 +18,14 @@ public class Tweet {
 
     int charactersNumber;
     String tweetText;
-    public Tweet(int urlsSize, int hastagsSize, int mentionSize, String text, boolean retweeted_status, Date created_at) {
+    public Tweet(int urlsSize, int hastagsSize, int mentionSize, String text, boolean retweeted_status, Date created_at,int like) {
         this.numberOfURL = urlsSize;
         this.numberOfHashTags= hastagsSize;
         this.numberOfMention = mentionSize;
         this.tweetText = text;
         this.isARetweet = retweeted_status;
         this.tweetDate = created_at;
+        this.numberOfLikes = like;
     }
 
     public int getCharactersNumber() {

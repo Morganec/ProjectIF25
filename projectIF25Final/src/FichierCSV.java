@@ -21,12 +21,28 @@ public class FichierCSV {
         String csvFile = "src/fichierSauvegarde/save.csv";
         FileWriter writer = new FileWriter(csvFile);
 
-        CSVUtils.writeLine(writer, Arrays.asList("aaa", "bb,b", "cc,c"), ';', '"');
+
+
+
+
+        CSVUtils.writeLine(writer, Arrays.asList("ID user ","Length of proﬁle name", "Length of proﬁle description", "Number of tweets posted","Age of the user account, in days","Ratio of number of followings and followers","Number of following","Number of followers","Frequence of tweets posted per day","hashtags average","mentions average","links average", "Likes average per tweet"), ';', '"');
 
         for(User user:userList){
 
-            //custom separator + quote
-            CSVUtils.writeLine(writer, Arrays.asList("aaa", "bb,b", "cc,c"), ';', '"');
+            CSVUtils.writeLine(writer, Arrays.asList(user.getIdUser()+"",
+                    user.getSizeName()+"",
+                    user.getSizeDescr()+"",
+                    user.getTweetsList().size()+"",
+                    user.getAgeInDay()+"",
+                    Double.toString(user.getRatioFollow()).replace(".", ","),
+                    user.getNumberOfFriend()+"",
+                    user.getNumberOfFollowers()+"",
+                    Double.toString(user.getFreqTweetperDay()).replace(".", ","),
+                    Double.toString(user.getMoyHashtagPerTweet()).replace(".", ","),
+                    Double.toString(user.getMoyMentionPerTweet()).replace(".", ","),
+                    Double.toString(user.getMoyUrlPerTweet()).replace(".", ","),
+                    Double.toString(user.getMoyLikesPerTweet()).replace(".", ",")), ';', '"');
+
         }
 
 
