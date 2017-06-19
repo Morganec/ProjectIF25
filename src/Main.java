@@ -7,8 +7,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ParseurJSON parseurJSON = new ParseurJSON("src/JSON/tweet.json");
-        parseurJSON.getDonnee();
+        //ParseurJSON parseurJSON = new ParseurJSON("src/JSON/tweet.json");
+        //parseurJSON.getDonnee();
+
+        CouchDBSolution couchDBSolution = new CouchDBSolution();
+        couchDBSolution.getDonnee();
         ArrayList<User> userList = new ArrayList<User>();
         Tweet tweet = new Tweet(2,3,1,"bonjour",true,new GregorianCalendar(2013, Calendar.APRIL, 10).getTime(),3);
         User test = new User(1,"babar",100,200,new GregorianCalendar(2017, Calendar.MAY, 31).getTime(),"blavlablabla");
