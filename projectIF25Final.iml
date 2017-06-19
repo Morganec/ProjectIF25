@@ -7,9 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="json-simple-1.1.1" level="project" />
-    <orderEntry type="library" name="jna-4.1.0" level="project" />
-    <orderEntry type="library" name="json-lib-2.2.3-MODIFIED-jdk15" level="project" />
-    <orderEntry type="library" name="couchdb4j-0.1.2" level="project" />
+    <orderEntry type="library" name="org.ektorp-1.4.4" level="project" />
+    <orderEntry type="library" name="commons-io-2.5" level="project" />
   </component>
 </module>

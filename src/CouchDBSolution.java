@@ -1,10 +1,9 @@
 
-
-import com.fourspaces.couchdb.Database;
-
-
-import com.fourspaces.couchdb.Session;
-
+import org.ektorp.CouchDbConnector;
+import org.ektorp.CouchDbInstance;
+import org.ektorp.http.HttpClient;
+import org.ektorp.http.StdHttpClient;
+import org.ektorp.impl.StdCouchDbInstance;
 
 /**
  * Created by morgane on 19/06/17.
@@ -19,24 +18,19 @@ public class CouchDBSolution
     public CouchDBSolution() {
     }
     public void getDonnee(){
-        Session s = new Session("localhost",5984);
-        Database db = s.getDatabase("if25_tweets");
+         HttpClient httpClient = new StdHttpClient.Builder()
+                .host("localhost")
+                .port(5984)
+                .username("")
+                .password("").build();
 
 
-this.getTotalDocumentCount(db);
+        CouchDbInstance dbInstance = new StdCouchDbInstance(httpClient);
+        CouchDbConnector tweets = dbInstance.createConnector("if25_tweets", true);
 
-
+        System.out.println(tweets.getDatabaseName());
     }
 
 
 
-    public static int getTotalDocumentCount(Database db){
-
-        int count = db.getDocumentCount();
-
-        System.out.println("Total Documents: " + count);
-
-        return count;
-
-    }
 }

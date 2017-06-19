@@ -1,3 +1,4 @@
+/*
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -5,9 +6,11 @@ import org.json.simple.parser.JSONParser;
 import java.io.FileReader;
 import java.util.Iterator;
 
+*/
 /**
  * Created by morgane on 17/06/17.
- */
+ *//*
+
 public class ParseurJSON {
 String pathFileName;
     public ParseurJSON(String fileName) {
@@ -46,3 +49,4 @@ String pathFileName;
         }
     }
 }
+*/
