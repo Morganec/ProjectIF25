@@ -20,25 +20,26 @@ String pathFileName;
     public void getDonnee(){
         JSONParser parser = new JSONParser();
         try {
-
-
-
             Object obj = parser.parse(new FileReader(this.pathFileName));
 
-            JSONObject jsonObject = (JSONObject) obj;
+    JSONArray jsonAllData = (JSONArray) obj;
 
-            String textTweet = (String) jsonObject.get("text");
-            String id = (String) jsonObject.get("id_str");
-            JSONObject jsonData =(JSONObject) jsonObject.get("entities");
-            JSONArray hashtagsArray = (JSONArray) jsonData.get("hashtags");
+            for(int i=0;i<jsonAllData.size();i++){
+                JSONObject jsonObject = (JSONObject) jsonAllData.get(i);
+                String textTweet = (String) jsonObject.get("text");
+                String id = (String) jsonObject.get("id_str");
+                JSONObject jsonData =(JSONObject) jsonObject.get("entities");
+                JSONArray hashtagsArray = (JSONArray) jsonData.get("hashtags");
 
-            System.out.println("Text tweet : " + textTweet);
-            System.out.println("ID tweet : " + id);
-            System.out.println("\nHashtags :");
-            Iterator<String> iterator = hashtagsArray.iterator();
-            while (iterator.hasNext()) {
-                System.out.println(iterator.next());
+                System.out.println("Text tweet : " + textTweet);
+                System.out.println("ID tweet : " + id);
+                System.out.println("\nHashtags :");
+                Iterator<String> iterator = hashtagsArray.iterator();
+                while (iterator.hasNext()) {
+                    System.out.println(iterator.next());
+                }
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
