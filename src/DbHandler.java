@@ -93,7 +93,8 @@ Date datecreation = convertStringToDate(jsonObject.get("created_at").getAsString
 
 creerBdAttributs(userList);
         Long idUser = getRandomIdUser(userList);
-        estAtypique(idUser,userList);
+      boolean bool = estAtypique(idUser,userList);
+        int a = 1;
 
   /*      FichierCSV csv = new FichierCSV(userList);
         try {
@@ -241,9 +242,86 @@ creerBdAttributs(userList);
 
     public boolean estAtypique(Long idUser, HashMap<Long, User> usList ){
         boolean estAtypique = false;
+        int k = 5;
+        HashMap<Long, User> listVoisin = getVoisionProche(k,idUser,usList);
+        int nombreAtypique = 0;
+        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
+        List<JsonObject> jsonAttributsList = db.view("_all_docs")
+                .reduce(false)
+                .includeDocs(true)
+                .query(JsonObject.class);
+        for(int i = 0 ; i< jsonAttributsList.size() ; i++){
+            JsonObject jsonObject = jsonAttributsList.get(i);
+           if(  listVoisin.containsKey(jsonObject.get("idUser").getAsLong()) ){
+               if(jsonObject.get("isAtypique").getAsBoolean()){
+                   nombreAtypique++;
+               }
+           }
+        }
+
+        if(nombreAtypique >= (k/2)){
+            estAtypique =true;
+        }else{
+            estAtypique = false;
+        }
 
         return  estAtypique;
     }
+
+    public HashMap<Long, User> getVoisionProche(int k,Long idUser, HashMap<Long, User> usList){
+        HashMap<Long,User> userList = new HashMap<>();
+        HashMap<Long,User> userListVoisin = new HashMap<>();
+        userList.putAll(usList);
+        User monUser = userList.get(idUser);
+        userList.remove(monUser.getIdUser(),monUser);
+        if(k == userList.size()){
+
+            return userList;
+        }else{
+                HashMap<Long,Double> userVoisin = getProcheUser(monUser,k);
+                for(Map.Entry<Long,Double> e : userVoisin.entrySet()){
+                    userListVoisin.put(e.getKey(),userList.get(e.getKey()));
+                }
+        }
+        return userListVoisin;
+
+    }
+
+    public  HashMap<Long,Double> getProcheUser(User userATrouv, int k ){
+        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
+        List<JsonObject> jsonAttributsList = db.view("_all_docs")
+                .reduce(false)
+                .includeDocs(true)
+                .query(JsonObject.class);
+        User userATrouver = userATrouv;
+        double xNouvelEntre = userATrouv.getMoyMentionPerTweet();
+        double yNouvelEntre = userATrouv.getMoyHashtagPerTweet();
+        double zNouvelEntre = userATrouv.getMoyUrlPerTweet();
+        HashMap<Long,Double> listIdUserEtDistance = new HashMap<>();
+
+        for(int i = 0 ; i< jsonAttributsList.size() ; i++){
+            JsonObject jsonObject = jsonAttributsList.get(i);
+            double x = jsonObject.get("mentionAvg").getAsDouble();
+            double y = jsonObject.get("hachagsAvg").getAsDouble();
+            double z = jsonObject.get("urlAvg").getAsDouble();
+
+
+            Double distance = Math.sqrt( Math.abs((Math.pow(xNouvelEntre-x,2))) +
+                    Math.abs((Math.pow(yNouvelEntre-y,2))) +  Math.abs((Math.pow(zNouvelEntre-z,2)))
+            );
+
+            listIdUserEtDistance.put(jsonObject.get("idUser").getAsLong(),distance);
+
+        }
+
+listIdUserEtDistance.remove(userATrouv.getIdUser());
+        return listIdUserEtDistance.entrySet().stream()
+                 .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
+                 .limit(k)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
 
     public long getRandomIdUser(HashMap<Long, User> usList){
         HashMap<Long,User> userList = new HashMap<>();
