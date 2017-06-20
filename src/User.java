@@ -69,7 +69,13 @@ String descriptionProfil;
         for(int i=0;i<tweetsList.size();i++){
             totalUrl += tweetsList.get(i).numberOfURL;
         }
-        moyUrlPerTweet = totalUrl/tweetsList.size();
+        if(tweetsList.size() >0 ){
+            moyUrlPerTweet = totalUrl/tweetsList.size();
+        }
+        else{
+            moyUrlPerTweet = 0;
+        }
+
         return moyUrlPerTweet;
     }
 
@@ -78,7 +84,14 @@ String descriptionProfil;
         for(int i=0;i<tweetsList.size();i++){
             totalLike += tweetsList.get(i).numberOfLikes;
         }
-        moyLikePerTweet = totalLike/tweetsList.size();
+
+        if(tweetsList.size() >0 ){
+            moyLikePerTweet = totalLike/tweetsList.size();
+        }
+        else{
+            moyLikePerTweet = 0;
+        }
+
         return moyLikePerTweet;
     }
 
@@ -87,7 +100,12 @@ String descriptionProfil;
         for(int i=0;i<tweetsList.size();i++){
             totalMentionNumber += tweetsList.get(i).numberOfMention;
         }
-        moyMentionPerTweet= totalMentionNumber/tweetsList.size();
+        if(tweetsList.size() >0 ){
+            moyMentionPerTweet= totalMentionNumber/tweetsList.size();
+        }
+        else {
+            moyMentionPerTweet = 0;
+        }
         return moyMentionPerTweet;
     }
 
@@ -96,7 +114,12 @@ String descriptionProfil;
         for(int i=0;i<tweetsList.size();i++){
             totalHashtagNumber += tweetsList.get(i).numberOfHashTags;
         }
-        moyHashtagPerTweet= totalHashtagNumber/tweetsList.size();
+        if(tweetsList.size() >0 ){
+            moyHashtagPerTweet= totalHashtagNumber/tweetsList.size();
+        }
+        else{
+            moyHashtagPerTweet = 0;
+        }
         return moyHashtagPerTweet;
 
     }
@@ -176,7 +199,12 @@ String descriptionProfil;
     }
 
     public double getRatioFollow(){
-        return numberOfFollowers/numberOfFriend;
+        if(numberOfFriend > 0){
+            return numberOfFollowers/numberOfFriend;
+        }else{
+            return 0;
+        }
+
     }
 
 }

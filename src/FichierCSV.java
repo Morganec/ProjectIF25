@@ -5,15 +5,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by morgane on 16/06/17.
  */
 public class FichierCSV {
     private final static String FILE_NAME = "src/fichierSauvegarde/sauvegarde.csv";
-    ArrayList<User> userList = new ArrayList<>();
-    public FichierCSV(ArrayList<User> listeUser) {
-        this.userList.addAll(listeUser);
+    HashMap<Long,User> userList = new HashMap<>();
+    public FichierCSV(HashMap<Long,User> listeUser) {
+        this.userList.putAll(listeUser);
     }
 
     public boolean creerFichierCsv() throws IOException {
@@ -27,7 +28,7 @@ public class FichierCSV {
 
         CSVUtils.writeLine(writer, Arrays.asList("ID user ","Length of proﬁle name", "Length of proﬁle description", "Number of tweets posted","Age of the user account, in days","Ratio of number of followings and followers","Number of following","Number of followers","Frequence of tweets posted per day","hashtags average","mentions average","links average", "Likes average per tweet"), ';', '"');
 
-        for(User user:userList){
+        for(User user:userList.values()){
 
             CSVUtils.writeLine(writer, Arrays.asList(user.getIdUser()+"",
                     user.getSizeName()+"",
