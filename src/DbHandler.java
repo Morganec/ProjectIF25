@@ -1,5 +1,9 @@
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -36,12 +40,14 @@ public class DbHandler {
         for (int i = 0; i < jsonUserList.size() ; i++) {
             JsonObject jsonObject = jsonUserList.get(i).get("key").getAsJsonObject();
            // System.out.println(jsonObject.get("created_at").toString());
+
+Date datecreation = convertStringToDate(jsonObject.get("created_at").getAsString());
             User user = new User(
                     jsonObject.get("id").getAsLong(),
                     jsonObject.get("screen_name").getAsString(),
                     jsonObject.get("followers_count").getAsInt(),
                     jsonObject.get("friends_count").getAsInt(),
-                    new GregorianCalendar(2017, Calendar.MAY, 31).getTime(),
+                    datecreation,
                     jsonObject.get("description").getAsString()
             );
             userList.put(jsonObject.get("id").getAsLong(),user);
@@ -63,13 +69,15 @@ public class DbHandler {
                 if(jsonObject.get("in_reply_to_status_id") == null){
                     isRetweet = false;
                 }
+                Date datecreation = convertStringToDate(jsonObject.get("created_at").getAsString());
+               // System.out.println(datecreation.getTime());
                 Tweet tweet = new Tweet(
                         jsonObject.get("entities").getAsJsonObject().get("urls").getAsJsonArray().size(),
                         jsonObject.get("entities").getAsJsonObject().get("hashtags").getAsJsonArray().size(),
                         jsonObject.get("entities").getAsJsonObject().get("user_mentions").getAsJsonArray().size(),
                         jsonObject.get("text").getAsString(),
                         isRetweet,
-                        new GregorianCalendar(2017, Calendar.MAY, 31).getTime(),
+                        datecreation,
                         jsonObject.get("favorite_count").getAsInt()
                 );
                 Long idUSer = jsonObject.get("user").getAsJsonObject().get("id").getAsLong();
@@ -99,9 +107,16 @@ creerBdAttributs(userList);
         CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
         boolean isAtypique = false;
         for (Map.Entry<Long,User> e : userList.entrySet()){
-            System.out.println(e.getKey() + " : " + e.getValue());
+            //System.out.println(e.getKey() + " : " + e.getValue());
 
             User user = e.getValue();
+
+            if(estJeune(user.getIdUser(),userList) ){
+                    //&& bigRatioFollowers(user.getIdUser(),userList) && bigTweetHashtag(user.getIdUser(),userList )&& bigTweetLink(user.getIdUser(),userList) && bigTweetMention(user.getIdUser(),userList)){
+                isAtypique = true;
+            }else{
+                isAtypique = false;
+            }
             if(user.getTweetsList().size() >10){
                 Map<String, Object> map = new HashMap<>();
                 map.put("idUser", user.getIdUser());
@@ -119,8 +134,106 @@ creerBdAttributs(userList);
                 map.put("isAtypique", isAtypique);
                 db.save(map);
             }
+            this.estJeune(user.getIdUser(),userList);
         }
 
+
+
+    }
+
+
+    public boolean estJeune(long idUser, HashMap<Long, User> usList){
+        HashMap<Long, User> userList = new HashMap<>();
+        ArrayList<Long> listAge = new ArrayList<>();
+        userList.putAll(usList);
+        listAge.addAll(userList.entrySet().stream().map(e -> e.getValue().getAgeInDay()).collect(Collectors.toList()));
+      Collections.sort(listAge);
+       // System.out.println(listAge);
+        ArrayList<Long> listAge2 = new ArrayList<>();
+        listAge2.addAll(listAge.stream().limit(30).collect(Collectors.toList()));
+        if(listAge2.contains(userList.get(idUser).getAgeInDay())){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bigRatioFollowers(long idUser, HashMap<Long, User> usList){
+        HashMap<Long, User> userList = new HashMap<>();
+        ArrayList<Double> listRatio = new ArrayList<>();
+        userList.putAll(usList);
+        listRatio.addAll(userList.entrySet().stream().map(e -> e.getValue().getRatioFollow()).collect(Collectors.toList()));
+        Collections.sort(listRatio, Collections.reverseOrder());
+       // System.out.println(listRatio);
+        ArrayList<Double> listRatio2 = new ArrayList<>();
+        listRatio2.addAll(listRatio.stream().limit(30).collect(Collectors.toList()));
+        if(listRatio2.contains(userList.get(idUser).getRatioFollow())){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean noFollower(long idUser, HashMap<Long, User> usList){
+        HashMap<Long, User> userList = new HashMap<>();
+        userList.putAll(usList);
+        if(userList.get(idUser).getNumberOfFollowers() == 0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bigTweetLink(long idUser, HashMap<Long, User> usList){
+        HashMap<Long, User> userList = new HashMap<>();
+        ArrayList<Double> listLink = new ArrayList<>();
+        userList.putAll(usList);
+        listLink.addAll(userList.entrySet().stream().map(e -> e.getValue().getMoyUrlPerTweet()).collect(Collectors.toList()));
+        Collections.sort(listLink, Collections.reverseOrder());
+        ArrayList<Double> listLink2 = new ArrayList<>();
+        listLink2.addAll(listLink.stream().limit(30).collect(Collectors.toList()));
+        if(listLink2.contains(userList.get(idUser).getRatioFollow())){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bigTweetHashtag(long idUser, HashMap<Long, User> usList){
+        HashMap<Long, User> userList = new HashMap<>();
+        ArrayList<Double> listHashtag = new ArrayList<>();
+        userList.putAll(usList);
+        listHashtag.addAll(userList.entrySet().stream().map(e -> e.getValue().getMoyHashtagPerTweet()).collect(Collectors.toList()));
+        Collections.sort(listHashtag, Collections.reverseOrder());
+        ArrayList<Double> listHashtag2 = new ArrayList<>();
+        listHashtag2.addAll(listHashtag.stream().limit(30).collect(Collectors.toList()));
+        if(listHashtag2.contains(userList.get(idUser).getRatioFollow())){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bigTweetMention(long idUser, HashMap<Long, User> usList){
+        HashMap<Long, User> userList = new HashMap<>();
+        ArrayList<Double> listMention = new ArrayList<>();
+        userList.putAll(usList);
+        listMention.addAll(userList.entrySet().stream().map(e -> e.getValue().getMoyMentionPerTweet()).collect(Collectors.toList()));
+        Collections.sort(listMention, Collections.reverseOrder());
+        ArrayList<Double> listMention2 = new ArrayList<>();
+        listMention2.addAll(listMention.stream().limit(30).collect(Collectors.toList()));
+        if(listMention2.contains(userList.get(idUser).getRatioFollow())){
+            return true;
+        }
+        return false;
+    }
+
+    public Date convertStringToDate(String dateString){
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        String dateInString = new java.text.SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy",Locale.ENGLISH).format(cal.getTime());
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy",Locale.ENGLISH);
+        Date parsedDate = null;
+        try {
+            parsedDate = formatter.parse(dateString.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parsedDate;
     }
 
 }
