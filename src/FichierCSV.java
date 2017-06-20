@@ -26,23 +26,31 @@ public class FichierCSV {
 
 
 
-        CSVUtils.writeLine(writer, Arrays.asList("ID user ","Length of proﬁle name", "Length of proﬁle description", "Number of tweets posted","Age of the user account, in days","Ratio of number of followings and followers","Number of following","Number of followers","Frequence of tweets posted per day","hashtags average","mentions average","links average", "Likes average per tweet"), ';', '"');
-
+        CSVUtils.writeLine(writer, Arrays.asList("ID user ","Length of proﬁle name", "Length of proﬁle description", "Number of tweets posted","Age of the user account, in days","Ratio of number of followings and followers","Number of following","Number of followers","Frequence of tweets posted per day","hashtags average","mentions average","links average", "Likes average per tweet","Atypique"), ';', '"');
+int estAtipique = 0 ;
         for(User user:userList.values()){
+            if(user.getRatioFollow() > 100 ){
+                estAtipique = 1;
+            }else{
+                estAtipique=0;
+            }
+if(user.getTweetsList().size()>10){
+    CSVUtils.writeLine(writer, Arrays.asList(user.getIdUser()+"",
+            user.getSizeName()+"",
+            user.getSizeDescr()+"",
+            user.getTweetsList().size()+"",
+            user.getAgeInDay()+"",
+            Double.toString(user.getRatioFollow()).replace(".", ","),
+            user.getNumberOfFriend()+"",
+            user.getNumberOfFollowers()+"",
+            Double.toString(user.getFreqTweetperDay()).replace(".", ","),
+            Double.toString(user.getMoyHashtagPerTweet()).replace(".", ","),
+            Double.toString(user.getMoyMentionPerTweet()).replace(".", ","),
+            Double.toString(user.getMoyUrlPerTweet()).replace(".", ","),
+            Double.toString(user.getMoyLikesPerTweet()).replace(".", ","),
+            estAtipique+""), ';', '"');
+}
 
-            CSVUtils.writeLine(writer, Arrays.asList(user.getIdUser()+"",
-                    user.getSizeName()+"",
-                    user.getSizeDescr()+"",
-                    user.getTweetsList().size()+"",
-                    user.getAgeInDay()+"",
-                    Double.toString(user.getRatioFollow()).replace(".", ","),
-                    user.getNumberOfFriend()+"",
-                    user.getNumberOfFollowers()+"",
-                    Double.toString(user.getFreqTweetperDay()).replace(".", ","),
-                    Double.toString(user.getMoyHashtagPerTweet()).replace(".", ","),
-                    Double.toString(user.getMoyMentionPerTweet()).replace(".", ","),
-                    Double.toString(user.getMoyUrlPerTweet()).replace(".", ","),
-                    Double.toString(user.getMoyLikesPerTweet()).replace(".", ",")), ';', '"');
 
         }
 
