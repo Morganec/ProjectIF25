@@ -7,7 +7,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.ektorp-1.4.4" level="project" />
-    <orderEntry type="library" name="commons-io-2.5" level="project" />
+    <orderEntry type="library" name="lightcouch-0.1.8" level="project" />
+    <orderEntry type="library" name="gson-2.8.1" level="project" />
+    <orderEntry type="library" name="commons-codec-1.10-javadoc" level="project" />
+    <orderEntry type="library" name="commons-logging-1.2" level="project" />
+    <orderEntry type="library" name="jna-platform-4.1.0" level="project" />
+    <orderEntry type="library" name="httpcore-nio-4.4.6" level="project" />
   </component>
 </module>
