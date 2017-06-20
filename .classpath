@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/ektorp-all/bin/org.ektorp.android-1.2.2.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/ektorp-all/bin/org.ektorp.spring-1.2.2.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/ektorp-all/bin/org.ektorp-1.2.2.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/lightcouch-0.1.8.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-codec-1.10/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-codec-1.10/commons-codec-1.10-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-codec-1.10/commons-codec-1.10-sources.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-codec-1.10/commons-codec-1.10-tests.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-codec-1.10/commons-codec-1.10-test-sources.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-logging-1.2/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/commons-logging-1.2/commons-logging-1.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/fluent-hc-4.5.3.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/httpclient-4.5.3.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/httpclient-cache-4.5.3.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/httpclient-win-4.5.3.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/httpcore-4.4.6.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/httpmime-4.5.3.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-client-4.5.3/lib/jna-platform-4.1.0.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-core-4.4.6/lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-core-4.4.6/lib/httpcore-4.4.6.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-core-4.4.6/lib/httpcore-ab-4.4.6.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/httpcomponents-core-4.4.6/lib/httpcore-nio-4.4.6.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/gson/gson-2.8.1.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/gson/gson-2.8.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/Dropbox/School/UTT/Semestre 4/IF25/Projet/Java_drivers/gson/gson-2.8.1-sources.jar"/>
+	<classpathentry kind="output" path="out/production/projectIF25Final"/>
+</classpath>

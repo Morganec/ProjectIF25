@@ -9,10 +9,14 @@ public class Main {
 
         //ParseurJSON parseurJSON = new ParseurJSON("src/JSON/tweet.json");
         //parseurJSON.getDonnee();
+    	
+    	/*try {
 
         CouchDBSolution couchDBSolution = new CouchDBSolution();
         couchDBSolution.getDonnee();
-        ArrayList<User> userList = new ArrayList<User>();
+    	} catch(IOException ex){} */
+        
+        /*ArrayList<User> userList = new ArrayList<User>();
         Tweet tweet = new Tweet(2,3,1,"bonjour",true,new GregorianCalendar(2013, Calendar.APRIL, 10).getTime(),3);
         User test = new User(1,"babar",100,200,new GregorianCalendar(2017, Calendar.MAY, 31).getTime(),"blavlablabla");
         test.getTweetsList().add(tweet);
@@ -43,7 +47,10 @@ public class Main {
             csv.creerFichierCsv();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } */
+    	
+    	DbHandler db = new DbHandler();
+    	db.testing();
     }
 
 }

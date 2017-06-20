@@ -1,8 +1,13 @@
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
+import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 
 /**
@@ -10,25 +15,22 @@ import org.ektorp.impl.StdCouchDbInstance;
  */
 
 
-
-
 public class CouchDBSolution
 {
-
-    public CouchDBSolution() {
-    }
-    public void getDonnee(){
-         HttpClient httpClient = new StdHttpClient.Builder()
-                .host("localhost")
-                .port(5984)
-                .username("")
-                .password("").build();
-
+	
+	private int i;
+    public CouchDBSolution() { this.i = 0;}
+    
+    
+    public void getDonnee() throws IOException {
+    	HttpClient httpClient = new StdHttpClient.Builder()
+    			.url("http://localhost:5984")
+    			.build();
 
         CouchDbInstance dbInstance = new StdCouchDbInstance(httpClient);
-        CouchDbConnector tweets = dbInstance.createConnector("if25_tweets", true);
+        CouchDbConnector db = new StdCouchDbConnector("mydatabase", dbInstance);
 
-        System.out.println(tweets.getDatabaseName());
+        System.out.println(db.getDatabaseName());
     }
 
 
