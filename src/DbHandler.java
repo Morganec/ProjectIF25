@@ -3,6 +3,7 @@ import java.util.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbClientBase;
 import org.lightcouch.CouchDbInfo;
@@ -82,13 +83,42 @@ public class DbHandler {
 
 
 
+creerBdAttributs(userList);
 
-
-        FichierCSV csv = new FichierCSV(userList);
+  /*      FichierCSV csv = new FichierCSV(userList);
         try {
             csv.creerFichierCsv();
         } catch (IOException e) {
             e.printStackTrace();
+        }*/
+
+    }
+
+    public void creerBdAttributs(HashMap<Long, User> userList){
+
+        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
+        boolean isAtypique = false;
+        for (Map.Entry<Long,User> e : userList.entrySet()){
+            System.out.println(e.getKey() + " : " + e.getValue());
+
+            User user = e.getValue();
+            if(user.getTweetsList().size() >10){
+                Map<String, Object> map = new HashMap<>();
+                map.put("idUser", user.getIdUser());
+                map.put("sizeProfilName", user.getSizeName());
+                map.put("sizeDescr",user.getSizeDescr());
+                map.put("tweetsNumber",user.getTweetsList().size());
+                map.put("userAgeInDay",user.getAgeInDay());
+                map.put("ratioFollowingOnFollower",user.getRatioFollow());
+                map.put("followingNumber",user.getNumberOfFriend());
+                map.put("followersNumber",user.getNumberOfFollowers());
+                map.put("freqTweetPerDay",user.getFreqTweetperDay());
+                map.put("hachagsAvg", user.getMoyHashtagPerTweet());
+                map.put("mentionAvg", user.getMoyMentionPerTweet());
+                map.put("urlAvg",user.getMoyUrlPerTweet());
+                map.put("isAtypique", isAtypique);
+                db.save(map);
+            }
         }
 
     }

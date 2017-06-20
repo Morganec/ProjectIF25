@@ -26,7 +26,20 @@ public class FichierCSV {
 
 
 
-        CSVUtils.writeLine(writer, Arrays.asList("ID user ","Length of proﬁle name", "Length of proﬁle description", "Number of tweets posted","Age of the user account, in days","Ratio of number of followings and followers","Number of following","Number of followers","Frequence of tweets posted per day","hashtags average","mentions average","links average", "Likes average per tweet","Atypique"), ';', '"');
+        CSVUtils.writeLine(writer, Arrays.asList("ID user ",
+                "Length of proﬁle name",
+                "Length of proﬁle description",
+                "Number of tweets posted",
+                "Age of the user account," +
+                        " in days","Ratio of number of followings and followers",
+                "Number of following",
+                "Number of followers",
+                "Frequence of tweets posted per day",
+                "hashtags average",
+                "mentions average",
+                "links average",
+                "Likes average per tweet",
+                "Atypique"), ';', '"');
 int estAtipique = 0 ;
         for(User user:userList.values()){
             if(user.getRatioFollow() > 100 ){
