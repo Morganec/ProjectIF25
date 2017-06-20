@@ -92,6 +92,8 @@ Date datecreation = convertStringToDate(jsonObject.get("created_at").getAsString
 
 
 creerBdAttributs(userList);
+        Long idUser = getRandomIdUser(userList);
+        estAtypique(idUser,userList);
 
   /*      FichierCSV csv = new FichierCSV(userList);
         try {
@@ -234,6 +236,31 @@ creerBdAttributs(userList);
             e.printStackTrace();
         }
         return parsedDate;
+    }
+
+
+    public boolean estAtypique(Long idUser, HashMap<Long, User> usList ){
+        boolean estAtypique = false;
+
+        return  estAtypique;
+    }
+
+    public long getRandomIdUser(HashMap<Long, User> usList){
+        HashMap<Long,User> userList = new HashMap<>();
+        userList.putAll(usList);
+        ArrayList<Long> listID = new ArrayList<>();
+        listID.addAll(userList.keySet());
+        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
+        List<JsonObject> jsonAttributsList = db.view("_all_docs")
+                .reduce(false)
+                .includeDocs(true)
+                .query(JsonObject.class);
+
+        Random r = new Random();
+        int valeur = 0 + r.nextInt(jsonAttributsList.size() - 0);
+        JsonObject randomObject = jsonAttributsList.get(valeur);
+        System.out.print(randomObject.get("tweetsNumber").getAsString());
+        return randomObject.get("idUser").getAsLong();
     }
 
 }
