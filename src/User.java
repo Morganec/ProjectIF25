@@ -37,6 +37,7 @@ String descriptionProfil;
     private  double freqTweetperDay;
     private  double distBetwTweet;
     private double reputation;
+    private boolean isAtypique = false;
 
     public User(long id, String name, int followers_count, int friends_count, Date created_at,String descr) {
         this.idUser = id;
@@ -206,5 +207,15 @@ String descriptionProfil;
         }
 
     }
+
+
+	public boolean isAtypique() {
+		return isAtypique;
+	}
+
+
+	public void setAtypique(boolean isAtypique) {
+		this.isAtypique = isAtypique;
+	}
 
 }
