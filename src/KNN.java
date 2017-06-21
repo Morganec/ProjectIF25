@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonObject;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbClientBase;
+import org.lightcouch.CouchDbContext;
 
 
 public class KNN {
@@ -71,45 +72,71 @@ public class KNN {
                 if( userList.get(idUSer) != null){
                     User user  = userList.get(idUSer);
                     userList.get(idUSer).getTweetsList().add(tweet);
+                    userList.get(idUSer).getNumberOfTweet();
+                    userList.get(idUSer).getAgeInDay();
+                    userList.get(idUSer).getMoyUrlPerTweet();
+                    userList.get(idUSer).getMoyLikesPerTweet();
+                    userList.get(idUSer).getMoyMentionPerTweet();
+                    userList.get(idUSer).getFreqTweetperDay();                 
                 }
             }
         }
 
         HashMap<Long, User>  newUserList = createAttributDB(userList); //do below on the method and return the list straight        
         
-        //Long idUser = getRandomIdUser(userList);
-        User myUser = getRandomUser(newUserList);
-        isAtypic(myUser,newUserList, 5);
+        //Check for the optimal K        
+        System.out.println("Ks"+ getOptimalK(newUserList));
+        
+        //Testing our method
+       // User myUser = getRandomUser(newUserList);
+        //System.out.println(isAtypic(myUser,newUserList, 5));
     }
 	
 	// Creating the database with the users we kept
 	public HashMap<Long, User> createAttributDB(HashMap<Long, User> userList)
 	{
-        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
+        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");  
         
+        HashMap<Long, User> newUserList = new HashMap<>();
+
         for (Map.Entry<Long,User> e : userList.entrySet())
         {
             User user = e.getValue();
-            if(isYoung(user.getIdUser(),userList) ){                    
-            	user.setAtypique(true);
-            }else{
-            	user.setAtypique(false);
-            }
-            if(user.getTweetsList().size() >10){
-                db.save(user);
-            }
-            
+            //Filtering and only keep user with more than 10 tweets
+            if (user.getTweetsList().size() >10) {
+                //Setting our users as atypic or not
+	            if( checkAvgTweetLinks(user.getIdUser(),userList) 
+	            		 && checkAvgTweetHashtags(user.getIdUser(),userList) 
+	            		 && checkAvgTweetMentions(user.getIdUser(),userList) ){                    
+	            	user.setAtypique(true);
+	            	System.out.println("atypic !");
+	            }
+	            else{
+	            	user.setAtypique(false);
+	            }       
+	            newUserList.put(user.getIdUser(), user);
+	            db.save(user);
+            }            
         }
-        return userList;
+        return newUserList;
+    }
+
+	/** Check if the user is "popular" **/
+	public boolean isPopular(User user){        
+        if(user.getRatioFollow() < 2 && user.getRatioFollow() > 0){
+            return true;
+        }
+        return false;
     }
 	
-	/** Check users age in days**/
-	public boolean isYoung(long idUser, HashMap<Long, User> usList){
+	/** Check if the user is "young" **/
+	public boolean checkAgeInDays(long idUser, HashMap<Long, User> usList){
         HashMap<Long, User> userList = new HashMap<>();
         ArrayList<Long> listAge = new ArrayList<>();
         userList.putAll(usList);
         listAge.addAll(userList.entrySet().stream().map(e -> e.getValue().getAgeInDay()).collect(Collectors.toList()));
         Collections.sort(listAge);
+        int limit_value = listAge.size() * 40/100;
         ArrayList<Long> listAge2 = new ArrayList<>();
         listAge2.addAll(listAge.stream().limit(30).collect(Collectors.toList()));
         if(listAge2.contains(userList.get(idUser).getAgeInDay())){
@@ -117,72 +144,49 @@ public class KNN {
         }
         return false;
     }
-	
-	/** Get users following/follower ratio **/
-	public boolean followRation(long idUser, HashMap<Long, User> usList){
-        HashMap<Long, User> userList = new HashMap<>();
-        ArrayList<Double> listRatio = new ArrayList<>();
-        userList.putAll(usList);
-        listRatio.addAll(userList.entrySet().stream().map(e -> e.getValue().getRatioFollow()).collect(Collectors.toList()));
-        Collections.sort(listRatio, Collections.reverseOrder());
-       // System.out.println(listRatio);
-        ArrayList<Double> listRatio2 = new ArrayList<>();
-        listRatio2.addAll(listRatio.stream().limit(30).collect(Collectors.toList()));
-        if(listRatio2.contains(userList.get(idUser).getRatioFollow())){
-            return true;
-        }
-        return false;
-    }
-	
-	/** Get users followers number **/
-	public boolean nbFollowers(long idUser, HashMap<Long, User> usList){
-        HashMap<Long, User> userList = new HashMap<>();
-        userList.putAll(usList);
-        if(userList.get(idUser).getNumberOfFollowers() == 0){
-            return true;
-        }
-        return false;
-    }
-	
-	/** Get users average number of links in tweets **/
-	public boolean avgTweetLinks(long idUser, HashMap<Long, User> usList){
+
+	/** Check if the user is part of serial linkers **/
+	public boolean checkAvgTweetLinks(long idUser, HashMap<Long, User> usList){
         HashMap<Long, User> userList = new HashMap<>();
         ArrayList<Double> listLink = new ArrayList<>();
         userList.putAll(usList);
         listLink.addAll(userList.entrySet().stream().map(e -> e.getValue().getMoyUrlPerTweet()).collect(Collectors.toList()));
         Collections.sort(listLink, Collections.reverseOrder());
         ArrayList<Double> listLink2 = new ArrayList<>();
-        listLink2.addAll(listLink.stream().limit(30).collect(Collectors.toList()));
+        int limit_value = listLink.size() * 30/100;
+        listLink2.addAll(listLink.stream().limit(limit_value).collect(Collectors.toList()));
         if(listLink2.contains(userList.get(idUser).getRatioFollow())){
             return true;
         }
         return false;
     }
 	
-	/** Get users average number of hashtags in tweets **/
-	public boolean avgTweetHashtags(long idUser, HashMap<Long, User> usList){
+	/** Check if the user is part of serial hashtagers **/
+	public boolean checkAvgTweetHashtags(long idUser, HashMap<Long, User> usList){
         HashMap<Long, User> userList = new HashMap<>();
         ArrayList<Double> listHashtag = new ArrayList<>();
         userList.putAll(usList);
         listHashtag.addAll(userList.entrySet().stream().map(e -> e.getValue().getMoyHashtagPerTweet()).collect(Collectors.toList()));
         Collections.sort(listHashtag, Collections.reverseOrder());
         ArrayList<Double> listHashtag2 = new ArrayList<>();
-        listHashtag2.addAll(listHashtag.stream().limit(30).collect(Collectors.toList()));
+        int limit_value = listHashtag.size() * 30/100;
+        listHashtag2.addAll(listHashtag.stream().limit(limit_value).collect(Collectors.toList()));
         if(listHashtag2.contains(userList.get(idUser).getRatioFollow())){
             return true;
         }
         return false;
     }
 	
-	/** Get users average number of mentions in tweets **/
-	public boolean avgTweetMentions(long idUser, HashMap<Long, User> usList){
+	/** Check if the user is part of serial mentioners **/
+	public boolean checkAvgTweetMentions(long idUser, HashMap<Long, User> usList){
         HashMap<Long, User> userList = new HashMap<>();
         ArrayList<Double> listMention = new ArrayList<>();
         userList.putAll(usList);
         listMention.addAll(userList.entrySet().stream().map(e -> e.getValue().getMoyMentionPerTweet()).collect(Collectors.toList()));
         Collections.sort(listMention, Collections.reverseOrder());
         ArrayList<Double> listMention2 = new ArrayList<>();
-        listMention2.addAll(listMention.stream().limit(30).collect(Collectors.toList()));
+        int limit_value = listMention.size() * 30/100;
+        listMention2.addAll(listMention.stream().limit(limit_value).collect(Collectors.toList()));
         if(listMention2.contains(userList.get(idUser).getRatioFollow())){
             return true;
         }
@@ -200,10 +204,9 @@ public class KNN {
         
         //Getting the closest users Ids 
         HashMap<Long,Double> closestUserIds = new HashMap<>(); 
-        int datasetLength = userDataset.size() ;
         
-        for(int i = 0 ; i< datasetLength ; i++){
-            User user = userDataset.get(i);
+        for (Map.Entry<Long, User> entry : userDataset.entrySet()) { 
+        	User user = entry.getValue();
             double x = user.getMoyMentionPerTweet();
             double y = user.getMoyHashtagPerTweet();
             double z = user.getMoyUrlPerTweet();
@@ -214,18 +217,18 @@ public class KNN {
             );
 
             closestUserIds.put(user.getIdUser(),distance);
-
-        }
+    	}
 
         closestUserIds.remove(newUser.getIdUser());
-        closestUserIds.entrySet().stream()
+        HashMap<Long,Double> result = new HashMap<>();
+        result.putAll(closestUserIds.entrySet().stream()
                  .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
                  .limit(k)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                (e1, e2) -> e1, LinkedHashMap::new));
+                (e1, e2) -> e1, LinkedHashMap::new)));
         
         //Getting the corresponding users
-        for(Map.Entry<Long,Double> e : closestUserIds.entrySet()){
+        for(Map.Entry<Long,Double> e : result.entrySet()){
         	nearestNeighbors.put(e.getKey(),userDataset.get(e.getKey()));
         }
         
@@ -241,19 +244,17 @@ public class KNN {
         
         //Get the k closest neighbors
         HashMap<Long, User> nearestNeighbors = kNearestNeighbors(newUser, dataset, k);
-        
-        for(int i = 0 ; i< dataset.size() ; i++){
-            User user = dataset.get(i);
-            if(  nearestNeighbors.containsKey(user.getIdUser()) ){
-               if(user.isAtypique()){
-                   nombreAtypique++;
-               }
-           }
-        }
 
+        for (Map.Entry<Long, User> entry : nearestNeighbors.entrySet()) { 
+        	User user = entry.getValue();
+        	if(user.isAtypique())
+        		nombreAtypique++;
+        }       
+        
         //Check the majority type
         if(nombreAtypique >= (k/2))
         	isAtypic = true;
+        	
         
         return  isAtypic;
     }
@@ -279,31 +280,28 @@ public class KNN {
         return parsedDate;
     }
 	
-	/****/
-	public int getOptimalK(HashMap<Long, User> userList)
+	/** Checking for the optimal value for K**/
+	public ArrayList<Double> getOptimalK(HashMap<Long, User> userList)
 	{
+		ArrayList<Double> error_list = new ArrayList<>();
+		
 		int k = 1;
-		int optimalK = 1;
 		int listLength = userList.size();
-
-		int min_errors = listLength;
-		int iterator = 0;
+		
 		while(k < listLength)
 		{
 			int nb_errors = 0;
-			for(int i = 0; i < listLength; i++){
-				User user = userList.get(iterator);
+			
+			for (Map.Entry<Long, User> entry : userList.entrySet()) { 
+				User user = entry.getValue();
 				boolean test = isAtypic(user, userList, k);
 				if(test != user.isAtypique())
 					nb_errors++;
 			}
-			if(nb_errors < min_errors){
-				min_errors = nb_errors;
-				optimalK = k;
-			}
+			error_list.add((double)nb_errors);
 			k++;
 		}
-		return k;
+		return error_list;
 	}
 
 }
