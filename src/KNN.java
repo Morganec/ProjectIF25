@@ -12,12 +12,30 @@ import org.lightcouch.CouchDbContext;
 
 public class KNN {
 	
-	public KNN() {}
+	private String url;
+	private int port;
+	private String username;
+	private String password;
+	
+	public KNN() {
+		this.url = "localhost";
+		this.port = 5984;
+		this.username = "root";
+		this.password = "root";
+	}
+	
+	public KNN(String url, int port, String username, String password) {
+		this.url = url;
+		this.port = port;
+		this.username = username;
+		this.password = password;
+	}
 	
 	public void mainMethod() {
+		System.out.println("Début d'exécution du programme");   
 
         /** Accessing the database with the raw tweets **/
-		CouchDbClientBase db = new CouchDbClient("if25_tweets", true, "http", "localhost", 5984, "root", "root");
+		CouchDbClientBase db = new CouchDbClient("if25_tweets", true, "http", this.url, this.port, this.username, this.password);
 		
 		//Getting all the users (from the view)
 		HashMap<Long, User> userList = new HashMap<>();
@@ -28,6 +46,8 @@ public class KNN {
         hs.addAll(jsonUserList);
         jsonUserList.clear();
         jsonUserList.addAll(hs);
+        
+        System.out.println("1 - Récupération des Utilisateurs");
         
         // Creating the User objects
         for (int i = 0; i < jsonUserList.size() ; i++) {
@@ -50,6 +70,8 @@ public class KNN {
                 .reduce(false)
                 .includeDocs(true)
                 .query(JsonObject.class);
+        
+        System.out.println("2 - Ajout des tweets correspondant à  chaque utilisateur");
         
         // Creating the Tweet objects and linking them with corresponding users
         for (int i = 0; i < jsonTweetList.size() ; i++) {
@@ -82,21 +104,31 @@ public class KNN {
                 }
             }
         }
-
-        HashMap<Long, User>  newUserList = createAttributDB(userList); //do below on the method and return the list straight        
         
-        //Check for the optimal K        
-        System.out.println("Ks"+ getOptimalK(newUserList));
+        System.out.println("3 - Calcul des critères de chaque utilisateur");
+        HashMap<Long, User>  newUserList = createAttributDB(userList); //do below on the method and return the list straight                        
         
         //Testing our method
-       // User myUser = getRandomUser(newUserList);
-        //System.out.println(isAtypic(myUser,newUserList, 5));
+        System.out.println("4 - Test de la méthode KNN avec K = 3");        
+        User user1 = getRandomUser(newUserList);
+        System.out.println("User " + user1.nameUser + " profil atypique : " + user1.isAtypique());
+        System.out.println("Résultat de la méthode KNN : " + isAtypic(user1,newUserList, 3)+ "\n");
+        
+        System.out.println("5 - Test de la méthode KNN avec K = 5");         
+        User user2 = getRandomUser(newUserList);
+        System.out.println("User " + user2.nameUser + " profil atypique : " + user2.isAtypique());    
+        System.out.println("Résultat de la méthode KNN : " + isAtypic(user2,newUserList, 5) + "\n");
+        
+        //Check for the optimal K        
+        System.out.println("6 - Recherche du K Optimal : Taux d'erreurs de validation pour [ 1 <= K <= 140 ] \n"+ getOptimalK(newUserList));
+        
+        System.out.println("Fin d'exécution du programme");   
     }
 	
 	// Creating the database with the users we kept
 	public HashMap<Long, User> createAttributDB(HashMap<Long, User> userList)
 	{
-        CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");  
+        //CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", this.url, this.port, this.username, this.password);  
         
         HashMap<Long, User> newUserList = new HashMap<>();
 
@@ -110,13 +142,13 @@ public class KNN {
 	            		 && checkAvgTweetHashtags(user.getIdUser(),userList) 
 	            		 && checkAvgTweetMentions(user.getIdUser(),userList) ){                    
 	            	user.setAtypique(true);
-	            	System.out.println("atypic !");
+	            	//System.out.println("atypic !");
 	            }
 	            else{
 	            	user.setAtypique(false);
 	            }       
 	            newUserList.put(user.getIdUser(), user);
-	            db.save(user);
+	            //db.save(user);
             }            
         }
         return newUserList;
@@ -197,7 +229,7 @@ public class KNN {
 	/** Get entry user closest k neighbors **/
 	public  HashMap<Long,User> kNearestNeighbors(User newUser, HashMap<Long, User> userDataset, int k ){
         HashMap<Long,User> nearestNeighbors = new HashMap<>();
-        
+                
         //Getting the attributes we will focus on
         double xNouvelEntre = newUser.getMoyMentionPerTweet();
         double yNouvelEntre = newUser.getMoyHashtagPerTweet();
@@ -231,7 +263,7 @@ public class KNN {
         for(Map.Entry<Long,Double> e : result.entrySet()){
         	nearestNeighbors.put(e.getKey(), userDataset.get(e.getKey()));
         }
-        System.out.println(nearestNeighbors.size());
+        
         return nearestNeighbors;        
         
     }
@@ -240,8 +272,7 @@ public class KNN {
 	public boolean isAtypic(User newUser, HashMap<Long, User> dataset, int k )
 	{
         boolean isAtypic = false;
-        int nombreAtypique = 0;
-        
+        int nombreAtypique = 0;        
         //Get the k closest neighbors
         HashMap<Long, User> nearestNeighbors = kNearestNeighbors(newUser, dataset, k);
 
@@ -253,9 +284,7 @@ public class KNN {
         
         //Check the majority type
         if(nombreAtypique >= (k/2))
-        	isAtypic = true;
-        	
-        
+        	isAtypic = true;        
         
         return  isAtypic;
     }
@@ -282,7 +311,7 @@ public class KNN {
 	
 	/** Checking for the optimal value for K**/
 	public ArrayList<Double> getOptimalK(HashMap<Long, User> userList)
-	{
+	{       
 		ArrayList<Double> error_list = new ArrayList<>();
 		
 		int k = 1;
@@ -294,23 +323,13 @@ public class KNN {
 			
 			for (Map.Entry<Long, User> entry : userList.entrySet()) { 
 				User user = entry.getValue();
-				boolean test = isAtypic(user, userList, k);
-				System.out.println(test + " vs " + user.isAtypique());  
+				boolean test = isAtypic(user, userList, k);				
 				if(test != user.isAtypique())
 					nb_errors++;
 			}
 			error_list.add((double)nb_errors/listLength);
 			k++;
-		}
-		try {
-		FileWriter writer = new FileWriter("D:\\Dropbox\\School\\UTT\\Semestre 4\\IF25\\knn.csv");
-
-		for (int j = 0; j < error_list.size(); j++) {
-		    writer.append(String.valueOf(error_list.get(j)));
-		    writer.append(",");
-		}
-		writer.close();
-		} catch (Exception e){}
+		}		
 		
 		return error_list;
 	}
