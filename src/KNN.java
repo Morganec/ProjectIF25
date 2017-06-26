@@ -32,7 +32,7 @@ public class KNN {
 	}
 	
 	public void mainMethod() {
-		System.out.println("Début d'exécution du programme");   
+		System.out.println("---- Début d'exécution du programme ---- \n \n");   
 
         /** Accessing the database with the raw tweets **/
 		CouchDbClientBase db = new CouchDbClient("if25_tweets", true, "http", this.url, this.port, this.username, this.password);
@@ -111,18 +111,18 @@ public class KNN {
         //Testing our method
         System.out.println("4 - Test de la méthode KNN avec K = 3");        
         User user1 = getRandomUser(newUserList);
-        System.out.println("User " + user1.nameUser + " profil atypique : " + user1.isAtypique());
+        System.out.println("User : " + user1.nameUser + " -- profil atypique : " + user1.isAtypique());
         System.out.println("Résultat de la méthode KNN : " + isAtypic(user1,newUserList, 3)+ "\n");
         
         System.out.println("5 - Test de la méthode KNN avec K = 5");         
         User user2 = getRandomUser(newUserList);
-        System.out.println("User " + user2.nameUser + " profil atypique : " + user2.isAtypique());    
+        System.out.println("User : " + user2.nameUser + " -- profil atypique : " + user2.isAtypique());    
         System.out.println("Résultat de la méthode KNN : " + isAtypic(user2,newUserList, 5) + "\n");
         
         //Check for the optimal K        
-        System.out.println("6 - Recherche du K Optimal : Taux d'erreurs de validation pour [ 1 <= K <= 140 ] \n"+ getOptimalK(newUserList));
+        System.out.println("6 - Recherche du K Optimal : Taux d'erreurs de validation pour [ 1 <= K <= 140 ] \n \n"+ getOptimalK(newUserList));
         
-        System.out.println("Fin d'exécution du programme");   
+        System.out.println("---- Fin d'exécution du programme ----");   
     }
 	
 	// Creating the database with the users we kept
