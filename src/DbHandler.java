@@ -37,6 +37,7 @@ public class DbHandler {
         hs.addAll(jsonUserList);
         jsonUserList.clear();
         jsonUserList.addAll(hs);
+
         for (int i = 0; i < jsonUserList.size() ; i++) {
             JsonObject jsonObject = jsonUserList.get(i).get("key").getAsJsonObject();
            // System.out.println(jsonObject.get("created_at").toString());
@@ -92,7 +93,9 @@ Date datecreation = convertStringToDate(jsonObject.get("created_at").getAsString
 
 
 creerBdAttributs(userList);
+
         Long idUser = getRandomIdUser(userList);
+        System.out.println("Appel de la methode 'est atypique'");
       boolean bool = estAtypique(idUser,userList);
         int a = 1;
 
@@ -106,7 +109,7 @@ creerBdAttributs(userList);
     }
 
     public void creerBdAttributs(HashMap<Long, User> userList){
-
+        System.out.println("Creation de table utilisateurs avec tous les attributs correspondants");
         CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
         boolean isAtypique = false;
         for (Map.Entry<Long,User> e : userList.entrySet()){
@@ -241,8 +244,10 @@ creerBdAttributs(userList);
 
 
     public boolean estAtypique(Long idUser, HashMap<Long, User> usList ){
+
         boolean estAtypique = false;
         int k = 5;
+        System.out.println("Récupération des voisins proches pour k = " + k );
         HashMap<Long, User> listVoisin = getVoisionProche(k,idUser,usList);
         int nombreAtypique = 0;
         CouchDbClientBase db = new CouchDbClient("if25_attributs", true, "http", "localhost", 5984, "root", "root");
@@ -264,7 +269,7 @@ creerBdAttributs(userList);
         }else{
             estAtypique = false;
         }
-
+        System.out.println("Comparaison du nombre d'atypique dans les voisins ");
         return  estAtypique;
     }
 

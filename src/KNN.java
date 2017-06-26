@@ -27,7 +27,7 @@ public class KNN {
         hs.addAll(jsonUserList);
         jsonUserList.clear();
         jsonUserList.addAll(hs);
-        
+        System.out.println("Creation de la liste d'utilisateurs avec les tweets");
         // Creating the User objects
         for (int i = 0; i < jsonUserList.size() ; i++) {
             JsonObject jsonObject = jsonUserList.get(i).get("key").getAsJsonObject();
@@ -49,7 +49,7 @@ public class KNN {
                 .reduce(false)
                 .includeDocs(true)
                 .query(JsonObject.class);
-        
+        System.out.println("Ajout des tweets correspondant à chaque utilisateur");
         // Creating the Tweet objects and linking them with corresponding users
         for (int i = 0; i < jsonTweetList.size() ; i++) {
             if(jsonTweetList.get(i).get("docs") != null){
@@ -81,6 +81,7 @@ public class KNN {
                 }
             }
         }
+        System.out.println("Création de la table d'utilisateurs associés à leurs attributs ");
 
         HashMap<Long, User>  newUserList = createAttributDB(userList); //do below on the method and return the list straight        
         
@@ -196,7 +197,7 @@ public class KNN {
 	/** Get entry user closest k neighbors **/
 	public  HashMap<Long,User> kNearestNeighbors(User newUser, HashMap<Long, User> userDataset, int k ){
                 HashMap<Long,User> nearestNeighbors = new HashMap<>();
-        
+        System.out.println("recherche des k plus proches voisins avec k = " + k );
         //Getting the attributes we will focus on
         double xNouvelEntre = newUser.getMoyMentionPerTweet();
         double yNouvelEntre = newUser.getMoyHashtagPerTweet();
@@ -219,7 +220,7 @@ public class KNN {
             closestUserIds.put(user.getIdUser(),distance);
     	}
 
-        closestUserIds.remove(newUser.getIdUser());
+        //closestUserIds.remove(newUser.getIdUser());
         HashMap<Long,Double> result = new HashMap<>();
         result.putAll(closestUserIds.entrySet().stream()
                  .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
@@ -241,7 +242,7 @@ public class KNN {
 	{
         boolean isAtypic = false;
         int nombreAtypique = 0;
-        
+        System.out.println("Regarde si l'utilisateurs est atypique en triant les voisins récupéré ");
         //Get the k closest neighbors
         HashMap<Long, User> nearestNeighbors = kNearestNeighbors(newUser, dataset, k);
 
@@ -283,6 +284,9 @@ public class KNN {
 	/** Checking for the optimal value for K**/
 	public ArrayList<Double> getOptimalK(HashMap<Long, User> userList)
 	{
+
+
+        System.out.println("Recherche du K optimal");
 		ArrayList<Double> error_list = new ArrayList<>();
 		
 		int k = 1;
