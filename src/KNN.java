@@ -1,3 +1,4 @@
+import java.io.FileWriter;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -195,7 +196,7 @@ public class KNN {
 	
 	/** Get entry user closest k neighbors **/
 	public  HashMap<Long,User> kNearestNeighbors(User newUser, HashMap<Long, User> userDataset, int k ){
-                HashMap<Long,User> nearestNeighbors = new HashMap<>();
+        HashMap<Long,User> nearestNeighbors = new HashMap<>();
         
         //Getting the attributes we will focus on
         double xNouvelEntre = newUser.getMoyMentionPerTweet();
@@ -211,28 +212,27 @@ public class KNN {
             double y = user.getMoyHashtagPerTweet();
             double z = user.getMoyUrlPerTweet();
             
-            //Pythagore Theorem to get the distance between two point in space
+            //Pythagor Theorem to get the distance between two point in space
             Double distance = Math.sqrt( Math.abs((Math.pow(xNouvelEntre-x,2))) +
                     Math.abs((Math.pow(yNouvelEntre-y,2))) +  Math.abs((Math.pow(zNouvelEntre-z,2)))
             );
 
-            closestUserIds.put(user.getIdUser(),distance);
+            closestUserIds.put(user.getIdUser(), distance);
     	}
 
-        closestUserIds.remove(newUser.getIdUser());
         HashMap<Long,Double> result = new HashMap<>();
         result.putAll(closestUserIds.entrySet().stream()
-                 .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
+                 .sorted(Map.Entry.<Long, Double>comparingByValue())
                  .limit(k)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                 (e1, e2) -> e1, LinkedHashMap::new)));
         
         //Getting the corresponding users
         for(Map.Entry<Long,Double> e : result.entrySet()){
-        	nearestNeighbors.put(e.getKey(),userDataset.get(e.getKey()));
+        	nearestNeighbors.put(e.getKey(), userDataset.get(e.getKey()));
         }
-        
-        return nearestNeighbors;
+        System.out.println(nearestNeighbors.size());
+        return nearestNeighbors;        
         
     }
 	
@@ -256,6 +256,7 @@ public class KNN {
         	isAtypic = true;
         	
         
+        
         return  isAtypic;
     }
 	
@@ -268,7 +269,6 @@ public class KNN {
 	
 	/** method to convert string into a date object **/
 	public Date convertStringToDate(String dateString){
-        java.util.Calendar cal = java.util.Calendar.getInstance();
         
         SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy",Locale.ENGLISH);
         Date parsedDate = null;
@@ -295,12 +295,23 @@ public class KNN {
 			for (Map.Entry<Long, User> entry : userList.entrySet()) { 
 				User user = entry.getValue();
 				boolean test = isAtypic(user, userList, k);
+				System.out.println(test + " vs " + user.isAtypique());  
 				if(test != user.isAtypique())
 					nb_errors++;
 			}
-			error_list.add((double)nb_errors);
+			error_list.add((double)nb_errors/listLength);
 			k++;
 		}
+		try {
+		FileWriter writer = new FileWriter("D:\\Dropbox\\School\\UTT\\Semestre 4\\IF25\\knn.csv");
+
+		for (int j = 0; j < error_list.size(); j++) {
+		    writer.append(String.valueOf(error_list.get(j)));
+		    writer.append(",");
+		}
+		writer.close();
+		} catch (Exception e){}
+		
 		return error_list;
 	}
 
